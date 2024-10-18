@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>エクササイズ回数</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f8ff;
+        }
+        .container {
+            text-align: center;
+            background-color: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+        #plant {
+            font-size: 100px;
+            margin: 20px 0;
+        }
+        input {
+            font-size: 16px;
+            padding: 10px;
+            width: 60%;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        button {
+            font-size: 16px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        #message {
+            color: #4CAF50;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>エクササイズ回数</h1>
+        <div id="plant">🌱</div>
+        <p>達成回数: <span id="count">0</span> / 100</p>
+        <input type="number" id="input" min="0" max="100" placeholder="回数を入力">
+        <button onclick="updateCount()">更新</button>
+        <p id="message"></p>
+    </div>
+
+    <script>
+        let totalCount = 0;
+        const plantStages = ['🌱', '🌿', '🌿🌿', '🌳', '🌳🌸', '🌳🍎'];
+
+        function updateCount() {
+            const input = document.getElementById('input');
+            const count = parseInt(input.value);
+            if (isNaN(count) || count < 0 || count > 100) {
+                alert('0から100までの数値を入力してください');
+                return;
+            }
+            if (totalCount + count > 100) {
+                alert('合計が100を超えています。最大100回までです。');
+                return;
+            }
+            totalCount += count;
+            document.getElementById('count').textContent = totalCount;
+            updatePlant();
+            input.value = '';
+            checkCompletion();
+        }
+
+        function updatePlant() {
+            const plantElement = document.getElementById('plant');
+            if (totalCount >= 50) {
+                const appleCount = Math.min(Math.floor((totalCount - 40) / 6), 10);
+                plantElement.textContent = '🌳' + '🍎'.repeat(appleCount);
+            } else if (totalCount >= 40) {
+                plantElement.textContent = plantStages[5]; // リンゴ1個の木
+            } else if (totalCount >= 30) {
+                plantElement.textContent = plantStages[4]; // 花が咲いた木
+            } else if (totalCount >= 20) {
+                plantElement.textContent = plantStages[3]; // 小さな木
+            } else if (totalCount >= 10) {
+                plantElement.textContent = plantStages[2]; // 大きな芽
+            } else if (totalCount >= 5) {
+                plantElement.textContent = plantStages[1]; // 小さな芽
+            } else {
+                plantElement.textContent = plantStages[0]; // 種
+            }
+        }
+
+        function checkCompletion() {
+            const messageElement = document.getElementById('message');
+            if (totalCount >= 100) {
+                messageElement.textContent = 'おめでとうございます！たくさん収穫できましたね！';
+                document.getElementById('input').disabled = true;
+                document.querySelector('button').disabled = true;
+            } else if (totalCount >= 50) {
+                const appleCount = Math.min(Math.floor((totalCount - 40) / 6), 10);
+                messageElement.textContent = `すごい！${appleCount}個のリンゴが実りました！`;
+            } else {
+                messageElement.textContent = '';
+            }
+        }
+    </script>
+</body>
+</html>
